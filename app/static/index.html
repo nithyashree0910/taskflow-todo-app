@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow | Task Manager</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="sidebar">
+            <a class="brand" href="/">
+                <span class="brand-icon">✓</span>
+                <span>TaskFlow</span>
+            </a>
+
+            <p class="menu-label">WORKSPACE</p>
+
+            <nav class="navigation" aria-label="Task filters">
+                <button type="button" class="nav-item active" data-filter="all">
+                    <span aria-hidden="true">▦</span> All Tasks
+                    <span class="nav-count" id="allCount">0</span>
+                </button>
+                <button type="button" class="nav-item" data-filter="today">
+                    <span aria-hidden="true">◷</span> Today
+                </button>
+                <button type="button" class="nav-item" data-filter="upcoming">
+                    <span aria-hidden="true">▣</span> Upcoming
+                </button>
+                <button type="button" class="nav-item" data-filter="pending">
+                    <span aria-hidden="true">◉</span> Pending
+                    <span class="nav-count" id="pendingCount">0</span>
+                </button>
+                <button type="button" class="nav-item" data-filter="completed">
+                    <span aria-hidden="true">✓</span> Completed
+                </button>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="sidebar-note">
+                    <div class="note-icon">✦</div>
+                    <strong>One step at a time.</strong>
+                    <p>Small tasks lead to big achievements.</p>
+                </div>
+                <div class="profile">
+                    <div class="avatar">TF</div>
+                    <div>
+                        <strong>My Workspace</strong>
+                        <p>Personal planner</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow" id="currentDate">YOUR WORKSPACE</p>
+                    <h1>Good things take <span>time.</span></h1>
+                    <p class="subtitle">Organize your day, focus on what matters.</p>
+                </div>
+                <button type="button" class="primary-button" id="openTaskForm">
+                    <span aria-hidden="true">＋</span> Add task
+                </button>
+            </header>
+
+            <section class="stats-grid" aria-label="Task statistics">
+                <article class="stat-card">
+                    <div class="stat-top"><span>Total tasks</span><span class="stat-icon purple">▦</span></div>
+                    <div class="stat-value" id="totalTasks">0</div>
+                    <p>Tasks in your workspace</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span>Completed</span><span class="stat-icon green">✓</span></div>
+                    <div class="stat-value" id="completedTasks">0</div>
+                    <p>Things you've accomplished</p>
+                </article>
+                <article class="stat-card">
+                    <div class="stat-top"><span>Pending</span><span class="stat-icon orange">◷</span></div>
+                    <div class="stat-value" id="pendingTasks">0</div>
+                    <p>Still waiting for you</p>
+                </article>
+                <article class="stat-card progress-card">
+                    <div class="stat-top"><span>Progress</span><span class="stat-icon pink">↗</span></div>
+                    <div class="stat-value"><span id="progressPercent">0</span><small>%</small></div>
+                    <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+                    <p>Keep moving forward!</p>
+                </article>
+            </section>
+
+            <section class="tasks-section">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="sectionTitle">All tasks</h2>
+                        <p id="taskSubtitle">Everything you want to get done.</p>
+                    </div>
+                    <label class="search-box">
+                        <span aria-hidden="true">⌕</span>
+                        <input id="searchInput" type="search" placeholder="Search tasks..." aria-label="Search tasks">
+                    </label>
+                </div>
+
+                <div class="task-toolbar">
+                    <div class="filter-chips" aria-label="Filter by priority">
+                        <button type="button" class="chip active" data-priority="all">All priorities</button>
+                        <button type="button" class="chip" data-priority="High">High</button>
+                        <button type="button" class="chip" data-priority="Medium">Medium</button>
+                        <button type="button" class="chip" data-priority="Low">Low</button>
+                    </div>
+                    <span id="visibleCount">0 tasks</span>
+                </div>
+
+                <div id="taskList" class="task-list" aria-live="polite">
+                    <p class="loading-state">Loading your tasks...</p>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <span>Made for your next little achievement ✦</span>
+                <span>TaskFlow · Stay focused</span>
+            </footer>
+        </main>
+    </div>
+
+    <dialog id="taskDialog" class="task-dialog">
+        <form id="taskForm">
+            <div class="dialog-heading">
+                <div>
+                    <p class="eyebrow">YOUR WORKSPACE</p>
+                    <h2 id="dialogTitle">Create a task</h2>
+                </div>
+                <button type="button" class="close-button" id="closeTaskForm" aria-label="Close">×</button>
+            </div>
+
+            <label class="field-label" for="taskTitle">Task title *</label>
+            <input id="taskTitle" name="title" maxlength="150" required placeholder="What do you need to do?">
+
+            <label class="field-label" for="taskDescription">Description</label>
+            <textarea id="taskDescription" name="description" rows="3" maxlength="1000" placeholder="Add a few details..."></textarea>
+
+            <div class="field-row">
+                <div>
+                    <label class="field-label" for="taskDueDate">Due date</label>
+                    <input id="taskDueDate" name="due_date" type="date">
+                </div>
+                <div>
+                    <label class="field-label" for="taskPriority">Priority</label>
+                    <select id="taskPriority" name="priority">
+                        <option value="Low">Low</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+            </div>
+
+            <p id="formError" class="form-error" role="alert"></p>
+            <div class="dialog-actions">
+                <button type="button" class="secondary-button" id="cancelTaskForm">Cancel</button>
+                <button type="submit" class="primary-button" id="saveTaskButton">Save task</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Task card structure is kept in HTML; JavaScript clones this template. -->
+    <template id="taskTemplate">
+        <article class="task-card">
+            <button type="button" class="complete-button" data-action="toggle" aria-label="Mark as completed" title="Mark as completed"></button>
+            <div class="task-details">
+                <h3 class="task-title"></h3>
+                <p class="task-description"></p>
+                <div class="task-meta">
+                    <span class="task-due-date"></span>
+                    <span class="task-priority"></span>
+                </div>
+            </div>
+            <div class="task-actions">
+                <button type="button" class="edit-button" data-action="edit">Edit</button>
+                <button type="button" class="delete-button" data-action="delete">Delete</button>
+            </div>
+        </article>
+    </template>
+</body>
+</html>
