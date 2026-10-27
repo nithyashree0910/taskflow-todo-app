@@ -15,15 +15,22 @@ pipeline {
             }
         }
 
+        stage('Create Virtual Environment') {
+            steps {
+                sh 'python3 -m venv .venv'
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m pip install --user -r requirements.txt'
+                sh '.venv/bin/python -m pip install --upgrade pip'
+                sh '.venv/bin/python -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Automated Tests') {
             steps {
-                sh 'python3 -m pytest tests/test_main.py -v'
+                sh '.venv/bin/python -m pytest tests/test_main.py -v'
             }
         }
     }
@@ -32,6 +39,7 @@ pipeline {
         success {
             echo 'TaskFlow pipeline succeeded!'
         }
+
         failure {
             echo 'TaskFlow pipeline failed. Check the Console Output.'
         }
