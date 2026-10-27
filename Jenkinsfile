@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'nithyashree0910/taskflow-app'
-        DOCKER_CREDENTIALS = 'dockerhub-credentials'
     }
 
     stages {
@@ -41,12 +40,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh """
-                        docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
-                        docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest
-                    """
-                }
+                sh '''
+                    docker build \
+                        -t "$DOCKER_IMAGE:$BUILD_NUMBER" \
+                        -t "$DOCKER_IMAGE:latest" .
+                '''
             }
         }
 
@@ -54,7 +52,7 @@ pipeline {
             steps {
                 withCredentials([
                     usernamePassword(
-                        credentialsId: "${DOCKER_CREDENTIALS}",
+                        credentialsId: 'dockerhub-credentials',
                         usernameVariable: 'DOCKERHUB_USERNAME',
                         passwordVariable: 'DOCKERHUB_TOKEN'
                     )
@@ -89,4 +87,3 @@ pipeline {
         }
     }
 }
-
